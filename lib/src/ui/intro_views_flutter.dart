@@ -19,6 +19,7 @@ class IntroViewsFlutter extends StatefulWidget {
   const IntroViewsFlutter(
     this.pages, {
     Key? key,
+    this.controller,
     this.onTapDoneButton,
     this.showSkipButton = true,
     this.pageButtonTextStyles,
@@ -43,6 +44,9 @@ class IntroViewsFlutter extends StatefulWidget {
           "At least one 'PageViewModel' item of 'pages' argument is required.",
         ),
         super(key: key);
+
+  /// EasyRefresh controller.
+  final IntroViewsController? controller;
 
   /// List of [PageViewModel] to display.
   final List<PageViewModel> pages;
@@ -230,6 +234,7 @@ class _IntroViewsFlutterState extends State<IntroViewsFlutter>
         }
       });
     });
+    widget.controller?._bind(this);
   }
 
   @override
@@ -287,45 +292,12 @@ class _IntroViewsFlutterState extends State<IntroViewsFlutter>
             // void callback to be executed after pressing done button
             slidePercent: slidePercent,
             slideDirection: slideDirection,
-            onPressedSkipButton: () {
-              // method executed on pressing skip button
-              setState(() {
-                activePageIndex = pages.length - 1;
-                nextPageIndex = activePageIndex;
-                // after skip pressed invoke function
-                // this can be used for analytics/page transition
-                if (widget.onTapSkipButton != null) {
-                  widget.onTapSkipButton!();
-                }
-              });
-            },
+            onPressedSkipButton: pressSkipButton,
             showSkipButton: widget.showSkipButton,
             showNextButton: widget.showNextButton,
             showBackButton: widget.showBackButton,
-            onPressedNextButton: () {
-              // method executed on pressing next button
-              setState(() {
-                activePageIndex = min(pages.length - 1, activePageIndex + 1);
-                nextPageIndex = min(pages.length - 1, nextPageIndex + 1);
-                // after next pressed invoke function
-                // this can be used for analytics/page transition
-                if (widget.onTapNextButton != null) {
-                  widget.onTapNextButton!();
-                }
-              });
-            },
-            onPressedBackButton: () {
-              // method executed on pressing back button
-              setState(() {
-                activePageIndex = max(0, activePageIndex - 1);
-                nextPageIndex = max(0, nextPageIndex - 1);
-                // after next pressed invoke function
-                // this can be used for analytics/page transition
-                if (widget.onTapBackButton != null) {
-                  widget.onTapBackButton!();
-                }
-              });
-            },
+            onPressedNextButton: pressNextButton,
+            onPressedBackButton: pressBackButton,
             nextText: widget.nextText,
             doneText: widget.doneText,
             backText: widget.backText,
@@ -342,5 +314,68 @@ class _IntroViewsFlutterState extends State<IntroViewsFlutter>
         ],
       ),
     );
+  }
+
+  void pressSkipButton() {
+    // method executed on pressing skip button
+    setState(() {
+      activePageIndex = widget.pages.length - 1;
+      nextPageIndex = activePageIndex;
+      // after skip pressed invoke function
+      // this can be used for analytics/page transition
+      if (widget.onTapSkipButton != null) {
+        widget.onTapSkipButton!();
+      }
+    });
+  }
+
+  void pressNextButton() {
+    // method executed on pressing next button
+    setState(() {
+      activePageIndex = min(widget.pages.length - 1, activePageIndex + 1);
+      nextPageIndex = min(widget.pages.length - 1, nextPageIndex + 1);
+      // after next pressed invoke function
+      // this can be used for analytics/page transition
+      if (widget.onTapNextButton != null) {
+        widget.onTapNextButton!();
+      }
+    });
+  }
+
+  void pressBackButton() {
+    // method executed on pressing back button
+    setState(() {
+      activePageIndex = max(0, activePageIndex - 1);
+      nextPageIndex = max(0, nextPageIndex - 1);
+      // after next pressed invoke function
+      // this can be used for analytics/page transition
+      if (widget.onTapBackButton != null) {
+        widget.onTapBackButton!();
+      }
+    });
+  }
+}
+
+class IntroViewsController {
+  /// [IntroViews] sate.
+  _IntroViewsFlutterState? _state;
+
+  /// Binding with EasyRefresh.
+  void _bind(_IntroViewsFlutterState state) {
+    _state = state;
+  }
+
+  /// Jump to next page
+  void toNextPage() {
+    _state?.pressNextButton();
+  }
+
+  /// Jump to previous page
+  void toPreviousPage() {
+    _state?.pressBackButton();
+  }
+
+  void skipPage() {
+    _state?.pressSkipButton();
   }
 }
