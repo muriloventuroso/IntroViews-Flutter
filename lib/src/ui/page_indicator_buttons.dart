@@ -105,6 +105,7 @@ class PageIndicatorButtons extends StatelessWidget {
     required this.doneButtonPersist,
     this.showNextButton = true,
     this.showBackButton = true,
+    this.showDoneButton = true,
     required this.backText,
   }) : super(key: key);
 
@@ -120,6 +121,7 @@ class PageIndicatorButtons extends StatelessWidget {
   final bool showSkipButton;
   final bool showNextButton;
   final bool showBackButton;
+  final bool showDoneButton;
 
   final Widget doneText;
   final Widget skipText;
@@ -146,8 +148,9 @@ class PageIndicatorButtons extends StatelessWidget {
       );
     } else if (activePageIndex == totalPages - 1 ||
         (activePageIndex == totalPages - 2 &&
-                slideDirection == SlideDirection.rightToLeft ||
-            doneButtonPersist)) {
+                    slideDirection == SlideDirection.rightToLeft ||
+                doneButtonPersist) &&
+            showDoneButton) {
       return DoneButton(
         onTap: onPressedDoneButton,
         pageButtonViewModel: PageButtonViewModel(

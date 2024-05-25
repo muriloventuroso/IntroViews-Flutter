@@ -25,6 +25,7 @@ class IntroViewsFlutter extends StatefulWidget {
     this.pageButtonTextStyles,
     this.onTapBackButton,
     this.showNextButton = false,
+    this.showDoneButton = true,
     this.showBackButton = false,
     this.pageButtonTextSize = 18.0,
     this.pageButtonFontFamily,
@@ -67,6 +68,9 @@ class IntroViewsFlutter extends StatefulWidget {
 
   /// Whether you want to show the Back button or not.
   final bool showBackButton;
+
+  /// Whether you want to show the Done button or not.
+  final bool showDoneButton;
 
   /// TextStyles for Done and Skip buttons.
   ///
@@ -296,6 +300,7 @@ class _IntroViewsFlutterState extends State<IntroViewsFlutter>
             showSkipButton: widget.showSkipButton,
             showNextButton: widget.showNextButton,
             showBackButton: widget.showBackButton,
+            showDoneButton: widget.showDoneButton,
             onPressedNextButton: pressNextButton,
             onPressedBackButton: pressBackButton,
             nextText: widget.nextText,
