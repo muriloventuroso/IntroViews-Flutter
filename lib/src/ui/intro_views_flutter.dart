@@ -40,6 +40,7 @@ class IntroViewsFlutter extends StatefulWidget {
     this.columnMainAxisAlignment = MainAxisAlignment.spaceAround,
     this.fullTransition = FULL_TRANSITION_PX,
     this.background,
+    this.showPageIndicator = true,
   })  : assert(
           pages.length > 0,
           "At least one 'PageViewModel' item of 'pages' argument is required.",
@@ -138,6 +139,8 @@ class IntroViewsFlutter extends StatefulWidget {
   /// Sets the background color to Colors.transparent if you have your own
   /// background image below.
   final Color? background;
+
+  final bool showPageIndicator;
 
   @override
   _IntroViewsFlutterState createState() => _IntroViewsFlutterState();
@@ -309,13 +312,14 @@ class _IntroViewsFlutterState extends State<IntroViewsFlutter>
             skipText: widget.skipText,
             doneButtonPersist: widget.doneButtonPersist,
           ),
-          PageDragger(
-            // used for gesture control
-            fullTransitionPX: widget.fullTransition,
-            canDragLeftToRight: activePageIndex > 0,
-            canDragRightToLeft: activePageIndex < pages.length - 1,
-            slideUpdateStream: slideUpdateStream,
-          ),
+          if (widget.showPageIndicator)
+            PageDragger(
+              // used for gesture control
+              fullTransitionPX: widget.fullTransition,
+              canDragLeftToRight: activePageIndex > 0,
+              canDragRightToLeft: activePageIndex < pages.length - 1,
+              slideUpdateStream: slideUpdateStream,
+            ),
         ],
       ),
     );
